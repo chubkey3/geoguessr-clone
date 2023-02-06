@@ -1,11 +1,12 @@
-import { GoogleMap, Marker, StreetViewPanorama, useJsApiLoader } from '@react-google-maps/api';
-import React, { useState } from 'react'
-import randomStreetView from 'random-streetview'
+import { GoogleMap, Marker, StreetViewPanorama, StreetViewService, useJsApiLoader } from '@react-google-maps/api';
+import React, { useEffect, useState } from 'react'
+import Data from './data.json'
 
 const containerStyle = {
     width: '100vw',
     height: '100vh',
-    zIndex: '1'
+    zIndex: '1',
+    position: 'absolute'
   };
 
 const mapOptions = {
@@ -23,17 +24,16 @@ const StreetViewOptions = {
 }
 
 
-const center = {
-    lat: Math.round((Math.random()*360 - 180) * 1000)/1000,
-    lng: Math.round((Math.random()*360 - 180) * 1000)/1000
-}
-
-
-function MyComponent() {
+function MyComponent({center}) {
 
   const [markers, setMarkers] = useState([]);
+  
+  const [location, setLocation] = useState();
 
-console.log(center)
+  useEffect(() => {
+    console.log(location)
+  }, [location])
+
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: "AIzaSyAa8AwVw9QKRS5AyGTih-iqcXgJ0ImcJ7o"
@@ -56,6 +56,22 @@ console.log(center)
   const onMapClick = (e) => {
     setMarkers((current) => [{lat: e.latLng.lat(), lng: e.latLng.lng()}])
   }
+
+  const testOnLoad = (streetViewService) => {
+    
+    const panoroma = new window.google.maps.StreetViewService()
+    /*
+    streetViewService.getPanorama({
+      location: center,
+      radius: 10000000
+    }, (data, status) => console.log(
+      "StreetViewService results",
+      { data, status }
+    ))
+    */
+   panoroma.getPanorama({location: center}, (data) => setLocation({lat: data.location.latLng.lat(), lng: data.location.latLng.lng()}))
+
+  };
   
   return isLoaded ? (
       <GoogleMap
@@ -71,11 +87,13 @@ console.log(center)
           <Marker position={{lat: marker.lat, lng: marker.lng}}/>
         ))}
         <StreetViewPanorama
-        position={center}
+        position={location}
         visible={true}
         options={StreetViewOptions}
         />
-        
+        <StreetViewService
+          onLoad={testOnLoad}
+        />
       </GoogleMap>
   ) : <></>
 }

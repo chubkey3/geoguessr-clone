@@ -28,6 +28,18 @@
   color: #61dafb;
 }
 
+.distance-header {
+  z-index: 34;
+  position: absolute;
+  right: 10.5%;
+  top: 40%;
+  font-weight: bold;
+  color: black;
+  background-color: #61dafb;
+  border-radius: 10%;
+  padding: 1rem;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
