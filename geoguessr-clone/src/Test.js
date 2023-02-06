@@ -1,5 +1,6 @@
 import { GoogleMap, Marker, StreetViewPanorama, useJsApiLoader } from '@react-google-maps/api';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { withGoogleMap } from '@react-google-maps/api'
 
 const containerStyle = {
   width: '25vw',
@@ -7,34 +8,61 @@ const containerStyle = {
   position: 'absolute',
   bottom: 0,
   right: 0,
-  zIndex: '2'
+  zIndex: '2',
+  hover: '{transform: scale(1.2)}'
 };
 
 const mapOptions = {
   fullscreenControl: false,
   mapTypeControl: false,
-  minZoom: 2,
   streetViewControl: false
 }
 
+//https://stackoverflow.com/questions/19304574/center-set-zoom-of-map-to-cover-all-visible-markers
 
-function MyComponent({center}) {
-
+function MyComponent({ center }) {
   const [markers, setMarkers] = useState([]);
   const [distance, setDistance] = useState();
+  const mapRef = useRef(null)
+
+  
 
   useEffect(() => {
-    if (center && markers[0]){
-      console.log(getDistance(center, markers[0]) + "km away")
-    } 
+    if (isLoaded) {
+      var bounds = new window.google.maps.LatLngBounds();
+      for (var i = 0; i < markers.length; i++) {
+        bounds.extend(markers[i])
+      }
+            
+      if (mapRef.current) {
+        map.setCenter(center)
+        map.fitBounds(bounds)
+        map.setZoom(map.getZoom() - 1)
+      }
+
+      
+    }
+
+    if (markers[0]){
+      getDistance(markers[0], markers[1])
+    }
     
+
+    //reload page
+    /*
+    if (markers.length > 0 ){
+      setTimeout(() => {
+        window.location.reload()
+      }, 3000)
+    }
+    */
   }, [markers])
 
-  var rad = function(x) {
+  var rad = function (x) {
     return x * Math.PI / 180;
   };
-  
-  var getDistance = function(p1, p2) {
+
+  var getDistance = function (p1, p2) {
     var R = 6378137; // Earth’s mean radius in meter
     var dLat = rad(p2.lat - p1.lat);
     var dLong = rad(p2.lng - p1.lng);
@@ -43,11 +71,11 @@ function MyComponent({center}) {
       Math.sin(dLong / 2) * Math.sin(dLong / 2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c;
-    setDistance(Math.floor(d/1000))
+    setDistance(Math.floor(d / 1000))
   };
 
-  document.body.onkeyup = function(e) {
-    if (e.key == " " || e.code == "Space" || e.keyCode == 32){
+  document.body.onkeyup = function (e) {
+    if (e.key == " " || e.code == "Space" || e.keyCode == 32) {
       alert(center)
     }
   }
@@ -61,13 +89,13 @@ function MyComponent({center}) {
 
   const onLoad = React.useCallback(function callback(map) {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
-    const bounds = new window.google.maps.LatLngBounds({lat: 0, lng: 0});
-    map.fitBounds(bounds);
-    
-    
-    map.setZoom(2)
+    //const bounds = new window.google.maps.LatLngBounds({ lat: 0, lng: 0 });
+    //map.fitBounds(bounds);
+
+    map.setZoom(1)
+
     setMap(map)
-    
+
   }, [])
 
   const onUnmount = React.useCallback(function callback(map) {
@@ -75,26 +103,27 @@ function MyComponent({center}) {
   }, [])
 
   const onMapClick = (e) => {
-    setMarkers((current) => [{lat: e.latLng.lat(), lng: e.latLng.lng()}])
+    setMarkers((current) => [{ lat: e.latLng.lat(), lng: e.latLng.lng() }, center])
   }
 
   return isLoaded ? (
     <>
-      {distance && <text className='distance-header'>{distance + 'km'}</text>}
+      {distance && <text className='distance-header'>{distance}</text>}
       <GoogleMap
         mapContainerStyle={containerStyle}
+        center={{lat: 0, lng: 0}}
         zoom={2}
-        center={center}
-        
+        onLoad={onLoad}
         onUnmount={onUnmount}
         onClick={onMapClick}
         options={mapOptions}
+        ref={mapRef}
       >
-        { /* Child components, such as markers, info windows, etc. */ }
+        { /* Child components, such as markers, info windows, etc. */}
         {markers.map((marker) => (
-          <Marker position={{lat: marker.lat, lng: marker.lng}}/>
+          <Marker position={{ lat: marker.lat, lng: marker.lng }} />
         ))}
-        
+
       </GoogleMap>
 
     </>
