@@ -1,13 +1,10 @@
 import { GoogleMap, Marker, StreetViewPanorama, useJsApiLoader } from '@react-google-maps/api';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { withGoogleMap } from '@react-google-maps/api'
 
 const containerStyle = {
   width: '25vw',
   height: '25vw',
-  position: 'absolute',
-  bottom: 0,
-  right: 0,
   zIndex: '2',
   hover: '{transform: scale(1.2)}'
 };
@@ -20,7 +17,7 @@ const mapOptions = {
 
 //https://stackoverflow.com/questions/19304574/center-set-zoom-of-map-to-cover-all-visible-markers
 
-function MyComponent({ center }) {
+function MyComponent({ center, toggleFull, setParentMarkers }) {
   const [markers, setMarkers] = useState([]);
   const [distance, setDistance] = useState();
   const mapRef = useRef(null)
@@ -35,9 +32,10 @@ function MyComponent({ center }) {
       }
             
       if (mapRef.current) {
-        map.setCenter(center)
+        //map.setCenter(center)
         map.fitBounds(bounds)
-        map.setZoom(map.getZoom() - 1)
+        //map.setZoom(map.getZoom() - 1)
+        toggleFull(prevState => !prevState);
       }
 
       
@@ -45,6 +43,7 @@ function MyComponent({ center }) {
 
     if (markers[0]){
       getDistance(markers[0], markers[1])
+      setParentMarkers(markers)
     }
     
 
@@ -106,9 +105,10 @@ function MyComponent({ center }) {
     setMarkers((current) => [{ lat: e.latLng.lat(), lng: e.latLng.lng() }, center])
   }
 
+  //useImperativeHandle(ref, () => ({getMarkers: () => {return markers}}), [markers])
+
   return isLoaded ? (
-    <>
-      {distance && <text className='distance-header'>{distance}</text>}
+    <div className='guess-map-container'>
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={{lat: 0, lng: 0}}
@@ -125,8 +125,9 @@ function MyComponent({ center }) {
         ))}
 
       </GoogleMap>
+      <button className='guess-button'>{(markers.length === 0) ? 'Place your pin to guess' : 'Guess'}</button>
 
-    </>
+    </div>
   ) : <></>
 }
 

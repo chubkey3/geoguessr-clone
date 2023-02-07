@@ -20,7 +20,8 @@ const StreetViewOptions = {
     fullscreenControl: false,
     addressControl: false,
     disableDefaultUI: false,
-    showRoadLabels: false
+    showRoadLabels: false,
+    enableCloseButton: false
 }
 
 
@@ -90,6 +91,7 @@ function MyComponent({center}) {
         position={location}
         visible={true}
         options={StreetViewOptions}
+        enableCloseButton={false}
         />
         <StreetViewService
           onLoad={testOnLoad}

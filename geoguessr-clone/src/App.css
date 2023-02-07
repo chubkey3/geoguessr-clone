@@ -40,6 +40,28 @@
   padding: 1rem;
 }
 
+.overlay {
+  z-index: 6;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(2px);
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.guess-button {
+  width: 100%;
+}
+
+.guess-map-container {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
