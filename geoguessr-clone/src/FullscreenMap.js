@@ -102,7 +102,7 @@ function FullscreenMap({markers}) {
         { /* Child components, such as markers, info windows, etc. */ }
         { /* Child components, such as markers, info windows, etc. */}
         {markers.map((marker) => (
-          <Marker animation={window.google.maps.Animation.DROP} icon={{url: "marker4.png", scale: 50}} scaledSize={new window.google.maps.Size(50, 50)} position={{ lat: marker.lat, lng: marker.lng }} />
+          <Marker animation={window.google.maps.Animation.DROP} icon={{url: "marker.png", scale: 50}} scaledSize={new window.google.maps.Size(50, 50)} position={{ lat: marker.lat, lng: marker.lng }} />
         ))}
         <Polyline path={markers}   strokeColor={"#FF0000"} strokeOpacity={1.0} strokeWeight={2}/>
         <></>
