@@ -126,7 +126,6 @@ function MyComponent({ center, toggleFull, setParentMarkers }) {
 
       </GoogleMap>
       <button className='guess-button'>{(markers.length === 0) ? 'Place your pin to guess' : 'Guess'}</button>
-
     </div>
   ) : <></>
 }

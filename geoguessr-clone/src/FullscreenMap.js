@@ -1,5 +1,5 @@
 import React from 'react'
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
+import { GoogleMap, Marker, useJsApiLoader, Polyline } from '@react-google-maps/api';
 
 const containerStyle = {
   width: '50vw',
@@ -74,7 +74,6 @@ function FullscreenMap({markers}) {
 
   const onLoad = React.useCallback(function callback(map) {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
-
     setMap(map)
   }, [])
 
@@ -82,6 +81,14 @@ function FullscreenMap({markers}) {
     setMap(null)
   }, [])
 
+  const path = [
+    { lat: 37.772, lng: -122.214 },
+    { lat: 21.291, lng: -157.821 },
+    { lat: -18.142, lng: 178.431 },
+    { lat: -27.467, lng: 153.027 },
+  ];
+
+  
   return isLoaded ? (
     <div className={'overlay'}>
       <GoogleMap
@@ -95,8 +102,9 @@ function FullscreenMap({markers}) {
         { /* Child components, such as markers, info windows, etc. */ }
         { /* Child components, such as markers, info windows, etc. */}
         {markers.map((marker) => (
-          <Marker position={{ lat: marker.lat, lng: marker.lng }} />
+          <Marker animation={window.google.maps.Animation.DROP} icon={{url: "marker4.png", scale: 50}} scaledSize={new window.google.maps.Size(50, 50)} position={{ lat: marker.lat, lng: marker.lng }} />
         ))}
+        <Polyline path={markers}   strokeColor={"#FF0000"} strokeOpacity={1.0} strokeWeight={2}/>
         <></>
       </GoogleMap>
       <text>You are {distance}km Away.</text>
