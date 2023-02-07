@@ -1,18 +1,13 @@
 import './App.css';
-import Test from './Test';
+import Test from './GuessMap';
 import StreetView from './StreetView';
 import Data from './data.json'
-import { useRef, useState } from 'react';
-import { GoogleMap, StreetViewService } from '@react-google-maps/api';
+import { useState } from 'react';
 import FullscreenMap from './FullscreenMap';
 
 function App() {
 
-  const center = Data[Math.floor(Math.random()*Data.length)]
-
-  const [showFull, toggleFull] = useState(false)
-
-  const mapGuessRef = useRef()
+  const [center, setCenter] = useState(Data[Math.floor(Math.random()*Data.length)])
 
   const [markers, setMarkers] = useState([])
 
@@ -20,8 +15,8 @@ function App() {
     <div className="App">
       <header className="App-header">
         <StreetView center={center}/>
-        <Test center={center} toggleFull={toggleFull} ref={mapGuessRef} setParentMarkers={setMarkers}/>
-        {showFull && <FullscreenMap markers={markers}/>}
+        <Test center={center} setParentMarkers={setMarkers}/>
+        {(markers.length > 0) && <FullscreenMap markers={markers} setMarkers={setMarkers}/>}
         
       </header>
     </div>

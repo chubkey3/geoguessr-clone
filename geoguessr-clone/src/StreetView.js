@@ -1,6 +1,5 @@
-import { GoogleMap, Marker, StreetViewPanorama, StreetViewService, useJsApiLoader } from '@react-google-maps/api';
-import React, { useEffect, useState } from 'react'
-import Data from './data.json'
+import { GoogleMap, StreetViewPanorama, StreetViewService, useJsApiLoader } from '@react-google-maps/api';
+import React, { useState } from 'react'
 
 const containerStyle = {
     width: '100vw',
@@ -31,10 +30,6 @@ function MyComponent({center}) {
   
   const [location, setLocation] = useState();
 
-  useEffect(() => {
-    console.log(location)
-  }, [location])
-
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: "AIzaSyAa8AwVw9QKRS5AyGTih-iqcXgJ0ImcJ7o"
@@ -60,16 +55,8 @@ function MyComponent({center}) {
 
   const testOnLoad = (streetViewService) => {
     
-    const panoroma = new window.google.maps.StreetViewService()
-    /*
-    streetViewService.getPanorama({
-      location: center,
-      radius: 10000000
-    }, (data, status) => console.log(
-      "StreetViewService results",
-      { data, status }
-    ))
-    */
+  const panoroma = new window.google.maps.StreetViewService()
+  
    panoroma.getPanorama({location: center}, (data) => setLocation({lat: data.location.latLng.lat(), lng: data.location.latLng.lng()}))
 
   };
@@ -83,10 +70,6 @@ function MyComponent({center}) {
         onClick={onMapClick}
         options={mapOptions}
       >
-        { /* Child components, such as markers, info windows, etc. */ }
-        {markers.map((marker) => (
-          <Marker position={{lat: marker.lat, lng: marker.lng}}/>
-        ))}
         <StreetViewPanorama
         position={location}
         visible={true}

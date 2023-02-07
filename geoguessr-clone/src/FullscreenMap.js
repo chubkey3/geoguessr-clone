@@ -8,15 +8,11 @@ const containerStyle = {
 
 };
 
-
-
 const mapOptions = {
     fullscreenControl: false,
     mapTypeControl: false,
     streetViewControl: false
   }
-
-const distance = 500;
 
 function FullscreenMap({markers}) {
   const { isLoaded } = useJsApiLoader({
@@ -27,31 +23,20 @@ function FullscreenMap({markers}) {
   const [map, setMap] = React.useState(null)
   const [distance, setDistance] = React.useState()
 
-
   React.useEffect(() => {
     if (isLoaded) {
       var bounds = new window.google.maps.LatLngBounds();
       for (var i = 0; i < markers.length; i++) {
         bounds.extend(markers[i])
       }
-            
-    
-    //map.setCenter(markers[1])
-    //setTimeout(() => {map.fitBounds(bounds); alert('hi')}, 2000)
-    
-    //map.setZoom(map.getZoom() - 1)
     
     map.fitBounds(bounds)
 
-      
     }
-    //console.log('hi')
 
     if (markers[0]){
       getDistance(markers[0], markers[1])
     }
-    
-
     
   }, [map, markers])
 
@@ -73,7 +58,6 @@ function FullscreenMap({markers}) {
 
 
   const onLoad = React.useCallback(function callback(map) {
-    // This is just an example of getting and using the map instance!!! don't just blindly copy!
     setMap(map)
   }, [])
 
@@ -81,14 +65,6 @@ function FullscreenMap({markers}) {
     setMap(null)
   }, [])
 
-  const path = [
-    { lat: 37.772, lng: -122.214 },
-    { lat: 21.291, lng: -157.821 },
-    { lat: -18.142, lng: 178.431 },
-    { lat: -27.467, lng: 153.027 },
-  ];
-
-  
   return isLoaded ? (
     <div className={'overlay'}>
       <GoogleMap
@@ -99,16 +75,14 @@ function FullscreenMap({markers}) {
         onUnmount={onUnmount}
         options={mapOptions}
       >
-        { /* Child components, such as markers, info windows, etc. */ }
-        { /* Child components, such as markers, info windows, etc. */}
         {markers.map((marker) => (
-          <Marker animation={window.google.maps.Animation.DROP} icon={{url: "marker.png", scale: 50}} scaledSize={new window.google.maps.Size(50, 50)} position={{ lat: marker.lat, lng: marker.lng }} />
+          <Marker key={marker.lat} animation={window.google.maps.Animation.DROP} icon={{url: "marker.png"}} scaledSize={new window.google.maps.Size(50, 50)} position={{ lat: marker.lat, lng: marker.lng }} />
         ))}
-        <Polyline path={markers}   strokeColor={"#FF0000"} strokeOpacity={1.0} strokeWeight={2}/>
+        <Polyline path={markers} strokeColor={"#FF0000"} strokeOpacity={1.0} strokeWeight={2}/>
         <></>
       </GoogleMap>
-      <text>You are {distance}km Away.</text>
-      <button onClick={() => {window.location.reload()}}>Guess Again</button>
+      <h3>You are {distance}km Away.</h3>
+      <button className='guess-again-button' onClick={() => {window.location.reload()}}>Guess Again</button>
     </div>
   ) : <></>
 }
